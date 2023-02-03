@@ -1,0 +1,24 @@
+{
+  "name": "portaldenoticias",
+  "version": "1.0.0",
+  "description": "",
+  "main": "Index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MatheusMBarros/Portal-de-noticias-NodeJs.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MatheusMBarros/Portal-de-noticias-NodeJs/issues"
+  },
+  "homepage": "https://github.com/MatheusMBarros/Portal-de-noticias-NodeJs#readme",
+  "dependencies": {
+    "body-parser": "^1.20.1",
+    "ejs": "^3.1.8",
+    "express": "^4.18.2"
+  }
+}
