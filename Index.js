@@ -2,10 +2,9 @@ const express = require('express')
 const path = require('path')
 //para recuperar a informacao do body
 var bodyParser = require('body-parser');
-const {
-    request
-} = require('http');
+//instancia o servidor
 const app = express();
+
 
 //setando a engine de renderizacao com o ejs
 app.engine('html', require('ejs').renderFile);
@@ -29,14 +28,15 @@ app.get('/', (require, response) => {
     if (require.query.busca == null) {
         response.render('home', {})
     } else
-        response.send('Voce buscou por: ' + require.query.busca)
+        response.render('busca', {})
 })
 
 
 
 //recuperandoa url de noticia
 app.get('/:slug', (require, response) => {
-    response.send(require.params.slug)
+    // response.send(require.params.slug)
+    response.render('partials/single', {})
 })
 
 app.listen(5000, () => {
