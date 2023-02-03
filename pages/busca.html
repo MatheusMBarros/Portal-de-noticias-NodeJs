@@ -7,47 +7,21 @@
         <br><br>
         <div class="center">
             <div style="width: 100%;" class="mais-lidas">
-                <h3>33 resultados</h3>
+                <h3><%= contagem%> Resultados</h3>
                 <div class="mais-lidas-noticias">
+                    <% for(let i = 0  ; i < posts.length; i++){ %>
                     <div class="mais-lida-noticia-single">
-                        <img src="/public/images/natureza_small.png" alt="">
+                        <img src="<%= posts[i].imagem%>">
                         <div class="texto-mais-lida-single">
-                            <h4>Natureza</h4>
-                            <p>A importância da floresta do ártico para a biodiversidade mundial. Qual o impacto o
-                                degelo na fauna e flora?</p>
-                            <a href="/encarar-o-surf">LER MAIS</a>
+                            <h4><%= posts[i].titulo%>a</h4>
+                            <p><%- posts[i].descricaoCurta%>...</p>
+                            <a href="<%= posts[i].slug%>f">LER MAIS</a>
                         </div>
                     </div>
-                    <div class="mais-lida-noticia-single">
-                        <img src="/public/images/natureza_small.png" alt="">
-                        <div class="texto-mais-lida-single">
-                            <h4>Natureza</h4>
-                            <p>A importância da floresta do ártico para a biodiversidade mundial. Qual o impacto o
-                                degelo na fauna e flora?</p>
-                            <a href="/encarar-o-surf">LER MAIS</a>
-
-                        </div>
-                    </div>
-                    <div class="mais-lida-noticia-single">
-                        <img src="/public/images/natureza_small.png" alt="">
-                        <div class="texto-mais-lida-single">
-                            <h4>Natureza</h4>
-                            <p>A importância da floresta do ártico para a biodiversidade mundial. Qual o impacto o
-                                degelo na fauna e flora?</p>
-                            <a href="/encarar-o-surf">LER MAIS</a>
-                        </div>
-                    </div>
-                    <div class="mais-lida-noticia-single">
-                        <img src="/public/images/natureza_small.png" alt="">
-                        <div class="texto-mais-lida-single">
-                            <h4>Natureza</h4>
-                            <p>A importância da floresta do ártico para a biodiversidade mundial. Qual o impacto o
-                                degelo na fauna e flora?</p>
-                            <a href="/encarar-o-surf">LER MAIS</a>
-                        </div>
-                    </div>
+                    <%} %>
                 </div>
             </div>
+
         </div>
     </div>
 </section>
