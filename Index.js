@@ -8,12 +8,22 @@ const app = express();
 
 const mongoose = require('mongoose');
 
+var session = require('express-session')
+
 // importando o Schema de posts
 const Posts = require('./Posts.js');
 const {
     render
 } = require('ejs');
 
+
+//inicializa a sessao
+app.use(session({
+    secret: 'keyboard cat',
+    cookie: {
+        maxAge: 60000
+    }
+}))
 
 mongoose.connect('mongodb+srv://MBarros02:Ma91810815!@cluster0.lbeeypd.mongodb.net/portalNoticial?retryWrites=true&w=majority', {
     useNewUrlParser: true,
@@ -41,9 +51,9 @@ app.use(bodyParser.urlencoded({
 }))
 
 //pagina inicial
-app.get('/', (require, response) => {
+app.get('/', (request, response) => {
     //recupera do Bd
-    if (require.query.busca == null) {
+    if (request.query.busca == null) {
 
         Posts.find({}).sort({
             '_id': -1
@@ -58,6 +68,8 @@ app.get('/', (require, response) => {
                     categoria: val.categoria
                 }
             })
+
+
             Posts.find({}).sort({
                 'views': -1
             }).limit(3).exec(function (err, postsTop) {
@@ -96,7 +108,7 @@ app.get('/', (require, response) => {
 
         Posts.find({
                 titulo: {
-                    $regex: require.query.busca,
+                    $regex: request.query.busca,
                     $options: "i"
                 },
             },
@@ -139,11 +151,11 @@ app.get('/', (require, response) => {
 
 
 //recuperandoa url de noticia
-app.get('/:slug', (require, response) => {
+app.get('/:slug', (request, response) => {
     // response.send(require.params.slug)
     Posts.findOneAndUpdate({
         //a slug que estou requisitando
-        slug: require.params.slug
+        slug: request.params.slug
     }, {
         //incrementando a view
         $inc: {
@@ -195,6 +207,44 @@ app.get('/:slug', (require, response) => {
 
 
     })
+})
+
+var usuarios = [{
+    login: 'Matheus',
+    senha: '123456'
+}]
+
+app.post('/admin/login', (request, response) => {
+    usuarios.map((val) => {
+        if (val.login == request.body.login && val.senha == request.body.senha) {
+            request.session.login = "Matheus"
+            response.redirect('/admin/login')
+        } else {
+            response.render('admin-login')
+        }
+
+    })
+
+})
+
+app.get('/admin/login', (request, response) => {
+    if (request.session.login == null) {
+        response.render('admin-login')
+    } else {
+        response.render('admin-panel')
+
+    }
+})
+
+app.post('/admin/cadastro', (request, response) => {
+    //falta inserir no BD
+    response.send('Cadastrado com sucesso')
+
+})
+
+app.get('/admin/deletar/:id', (request, response) => {
+    response.send('deletado a noticia com o id ' + request.params.id)
+
 })
 
 app.listen(5000, () => {
