@@ -59,10 +59,11 @@ app.get('/', (request, response) => {
             '_id': -1
         }).exec(function (err, posts) {
             posts = posts.map((val) => {
+
                 return {
                     titulo: val.titulo,
                     conteudo: val.conteudo,
-                    descricaoCurta: val.conteudo.substring(0, 100),
+                    descricaoCurta: val.conteudo.substr(0, 10),
                     imagem: val.imagem,
                     slug: val.slug,
                     categoria: val.categoria
@@ -84,7 +85,7 @@ app.get('/', (request, response) => {
 
                         conteudo: val.conteudo,
 
-                        descricaoCurta: val.conteudo.substr(0, 100),
+                        descricaoCurta: val.conteudo,
 
                         imagem: val.imagem,
 
@@ -122,7 +123,7 @@ app.get('/', (request, response) => {
 
                         conteudo: val.conteudo,
 
-                        descricaoCurta: val.conteudo.substr(0, 200),
+                        descricaoCurta: val.conteudo.substr(0, 100),
 
                         imagem: val.imagem,
 
@@ -180,7 +181,7 @@ app.get('/:slug', (request, response) => {
 
                         conteudo: val.conteudo,
 
-                        descricaoCurta: val.conteudo.substring(0, 100),
+                        descricaoCurta: val.conteudo.substr(0, 100),
 
                         imagem: val.imagem,
 
@@ -237,9 +238,20 @@ app.get('/admin/login', (request, response) => {
 })
 
 app.post('/admin/cadastro', (request, response) => {
-    //falta inserir no BD
-    response.send('Cadastrado com sucesso')
+    // falta inserir no BD
+    console.log(request.body)
+    Posts.create({
+        titulo: request.body.titulo_noticia,
+        imagem: request.body.url_imagem,
+        categoria: 'Nenhuma',
+        descricaoCurta: request.body.noticia.substring(0, 100),
+        conteudo: request.body.noticia,
+        slug: request.body.slug,
+        autor: 'Matheus',
+        views: 0
 
+    })
+    response.send('Cadastrado com sucesso!')
 })
 
 app.get('/admin/deletar/:id', (request, response) => {
