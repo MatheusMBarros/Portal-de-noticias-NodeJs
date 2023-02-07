@@ -97,16 +97,10 @@ section.noticia-destaque>.center {
     width: 100%;
     position: relative;
 
-    margin-left: -50px;
-
-
 }
 
 .img-destaque img {
     width: 100%;
-    max-width: 700px;
-    max-height: 500px;
-
     border-radius: 20px;
     background-size: 100%;
     background-repeat: no-repeat;
@@ -135,7 +129,8 @@ section.noticia-destaque>.center {
 }
 
 .title-destaque-descricao h2 {
-    font-size: 64px;
+    font-size: 24px;
+    width: 80%;
     padding: 20px 0;
 }
 

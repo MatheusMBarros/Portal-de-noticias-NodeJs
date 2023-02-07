@@ -259,6 +259,7 @@ app.get('/admin/login', (request, response) => {
 //--------------------------------------
 app.post('/admin/cadastro', (request, response) => {
 
+
     Posts.create({
         titulo: request.body.titulo_noticia,
         imagem: request.body.url_imagem,
