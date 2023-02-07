@@ -12,7 +12,8 @@ var postSchema = new Schema({
     views: Number
 
 }, {
-    collection: 'posts'
+    collection: 'posts',
+    versionKey: false
 })
 
 var Posts = mongoose.model("Posts", postSchema)

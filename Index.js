@@ -5,18 +5,20 @@ var bodyParser = require('body-parser');
 //instancia o servidor
 const app = express();
 //contectando o mongo
-
 const mongoose = require('mongoose');
-
+const fs = require('fs')
 var session = require('express-session')
-
 // importando o Schema de posts
 const Posts = require('./Posts.js');
-const {
-    render
-} = require('ejs');
+const fileupload = require('express-fileupload')
 
+const ejs = require('ejs')
+//-------------------------------------Imports ---------------------------------
 
+// arrumar rota pos busca
+//definir max-width e heigh para a div principal
+
+//-------------------------------------
 //inicializa a sessao
 app.use(session({
     secret: 'keyboard cat',
@@ -24,7 +26,7 @@ app.use(session({
         maxAge: 60000
     }
 }))
-
+//-------------------------------------
 mongoose.connect('mongodb+srv://MBarros02:Ma91810815!@cluster0.lbeeypd.mongodb.net/portalNoticial?retryWrites=true&w=majority', {
     useNewUrlParser: true,
     useUnifiedTopology: true
@@ -34,7 +36,7 @@ mongoose.connect('mongodb+srv://MBarros02:Ma91810815!@cluster0.lbeeypd.mongodb.n
     console.log(err.message)
 })
 
-
+//-------------------------------------
 //setando a engine de renderizacao com o ejs
 app.engine('html', require('ejs').renderFile);
 //setando a viewEnsgine como ejs
@@ -50,6 +52,7 @@ app.use(bodyParser.urlencoded({
     extended: true
 }))
 
+//-------------------------------------
 //pagina inicial
 app.get('/', (request, response) => {
     //recupera do Bd
@@ -59,11 +62,10 @@ app.get('/', (request, response) => {
             '_id': -1
         }).exec(function (err, posts) {
             posts = posts.map((val) => {
-
                 return {
                     titulo: val.titulo,
                     conteudo: val.conteudo,
-                    descricaoCurta: val.conteudo.substr(0, 10),
+                    descricaoCurta: val.conteudo.substring(0, 100),
                     imagem: val.imagem,
                     slug: val.slug,
                     categoria: val.categoria
@@ -75,8 +77,6 @@ app.get('/', (request, response) => {
                 'views': -1
             }).limit(3).exec(function (err, postsTop) {
 
-
-
                 postsTop = postsTop.map(function (val) {
 
                     return {
@@ -85,7 +85,7 @@ app.get('/', (request, response) => {
 
                         conteudo: val.conteudo,
 
-                        descricaoCurta: val.conteudo,
+                        descricaoCurta: val.conteudo.substring(0, 100),
 
                         imagem: val.imagem,
 
@@ -123,7 +123,7 @@ app.get('/', (request, response) => {
 
                         conteudo: val.conteudo,
 
-                        descricaoCurta: val.conteudo.substr(0, 100),
+                        descricaoCurta: val.conteudo.substring(0, 100),
 
                         imagem: val.imagem,
 
@@ -150,7 +150,7 @@ app.get('/', (request, response) => {
 })
 
 
-
+//-------------------------------------
 //recuperandoa url de noticia
 app.get('/:slug', (request, response) => {
     // response.send(require.params.slug)
@@ -181,7 +181,7 @@ app.get('/:slug', (request, response) => {
 
                         conteudo: val.conteudo,
 
-                        descricaoCurta: val.conteudo.substr(0, 100),
+                        descricaoCurta: val.conteudo.substring(0, 100),
 
                         imagem: val.imagem,
 
@@ -204,12 +204,10 @@ app.get('/:slug', (request, response) => {
             response.render('404', {})
         }
 
-        // console.log(resposta)
-
-
     })
 })
 
+//-------------------------------------
 var usuarios = [{
     login: 'Matheus',
     senha: '123456'
@@ -228,35 +226,62 @@ app.post('/admin/login', (request, response) => {
 
 })
 
+//-------------------------------------
 app.get('/admin/login', (request, response) => {
     if (request.session.login == null) {
         response.render('admin-login')
     } else {
-        response.render('admin-panel')
+        Posts.find({}).sort({
+            '_id': -1
+        }).exec(function (err, posts) {
+            posts = posts.map((val) => {
+                return {
+                    id: val._id,
+                    titulo: val.titulo,
+                    conteudo: val.conteudo,
+                    descricaoCurta: val.conteudo.substring(0, 100),
+                    imagem: val.imagem,
+                    slug: val.slug,
+                    categoria: val.categoria
+                }
+            })
+            response.render('admin-panel', {
+                posts: posts
+            })
+            // console.log(posts)
+
+        })
+
 
     }
 })
 
+//--------------------------------------
 app.post('/admin/cadastro', (request, response) => {
-    // falta inserir no BD
-    console.log(request.body)
+
     Posts.create({
         titulo: request.body.titulo_noticia,
         imagem: request.body.url_imagem,
-        categoria: 'Nenhuma',
+        categoria: 'Cadastro pelo painel admin',
         descricaoCurta: request.body.noticia.substring(0, 100),
         conteudo: request.body.noticia,
         slug: request.body.slug,
-        autor: 'Matheus',
+        autor: 'Matheus Barros',
         views: 0
-
     })
-    response.send('Cadastrado com sucesso!')
+    console.log(request.body)
+    response.redirect('/admin/login')
+
 })
 
-app.get('/admin/deletar/:id', (request, response) => {
-    response.send('deletado a noticia com o id ' + request.params.id)
 
+//----------------------------------------------------
+app.get('/admin/deletar/:id', (request, response) => {
+    Posts.deleteOne({
+        _id: request.params.id
+    }).then(() => {
+        response.redirect('/admin/login')
+    })
 })
 
 app.listen(5000, () => {
